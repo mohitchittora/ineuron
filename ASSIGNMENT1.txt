@@ -1,0 +1,53 @@
+
+/*=========iNeuron_SQL_Project=======*/
+/*======Task1=====*/
+
+
+create database shopping;
+use shopping;
+create table shopping_shop_histroy 
+(
+product Varchar (20) not null,
+quantity int(10) not null,
+unit_price int(10) not null
+);
+insert into shopping_shop_histroy (product, quantity, unit_price) values 
+("milk",3, 10),
+("bread",7, 3),
+("bread",5, 2);
+select product, sum( unit_price*quantity) as total_price from shopping_shop_histroy group by product;
+
+
+/*=========iNeuron_SQL_Project=======*/
+/*======Task2=====*/
+
+
+create database telecommuncation;
+use telecommuncation;
+create table phones
+(
+`Name` Varchar (20) not null unique,	
+phone_number int(20) not null primary key
+);
+
+create table calls
+(
+ID int(15) not null unique,
+caller int(20) not null,
+callee int(20) not null,
+duration int(20) not null,
+foreign key( caller) references phones(phone_number),
+foreign key( callee) references phones(phone_number)
+);
+insert into phones ( `Name`,phone_number) values ("jack",1234),("Lena",3333),("mark",9999),("Anne",7582);
+insert into calls values (25,1234,7582,8),(7,9999,7582,1),(18,9999,3333,4),(2,7582,3333,3),(3,3333,1234,1),(21,3333,1234,1);
+
+
+select `name` from
+(select `name`, (total_caller + total_callee) as Total_Duration from
+With mohit_total_caller as ( select p.`Name`, C.CALLER , sum(c.duration ) as total_caller from phones p inner join calls c on p.phone_number = c.caller group by c.caller),
+     Yuvaan_total_caller as (select p.`Name`,  C.CALLEE , sum(c.duration ) as total_callee from phones p inner join calls c on p.phone_number = c.callee group by c.callee)
+ 
+ select ad.`name`, ad.total_caller, ads.total_callee from  mohit_total_caller ad 
+ inner join
+ Yuvaan_total_caller ads on ad.`name` = ads.`name` group by `name`) as xyz) as abc where Total_Duration>=10;
